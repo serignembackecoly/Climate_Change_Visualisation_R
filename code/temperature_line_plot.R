@@ -40,17 +40,19 @@ t_data %>% ggplot(aes(x = month_number, y = t_diff, color = year,
   geom_text(data = annotation,
             aes(x = month_number, y = t_diff, label = year),
             size = 5, hjust = 0, nudge_x = 0.03, nudge_y = 0.05) +
-  scale_color_viridis_c("", breaks = seq(1880, 2020, 20)) +
+  scale_color_viridis_c("", breaks = seq(1880, 2020, 20),
+                        guide = guide_colorbar(frame.linewidth = 0.5,
+                                               frame.colour = "white")) +
   scale_x_continuous(breaks = 1:12,
                      labels = month.abb) +
   scale_y_continuous(breaks = seq(-0.8,1.4,0.2)) +
   scale_size_manual(values = c(0.15, 1), guide = "none") +
-  coord_cartesian(xlim = c(1,12)) +
+  coord_cartesian(xlim = c(0.5,12.5)) +
   labs(title = "Global temperature change since 1880 by month",
        y = "Temperature change since pre-industrial time (°C)",
        x = NULL) +
   theme(
-    panel.background = element_rect(fill = "black", colour = "white"),
+    panel.background = element_rect(fill = "black", colour = "white", size = 1),
     panel.grid = element_blank(),
     plot.background = element_rect(fill = "gray33"),
     plot.title = element_text(colour = "white", size = 14,
