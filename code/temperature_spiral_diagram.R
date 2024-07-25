@@ -17,51 +17,72 @@ temp_data <- raw_data %>%
   drop_na()
 
 # Some creationof data frame for plot purpose
-last_dec <- t_data %>% 
+last_dec <- temp_data %>% 
   filter(month == "Dec") %>% 
   mutate(year = year + 1,
          month = "last_dec")
 
-next_jan <- t_data %>% 
+next_jan <- temp_data %>% 
   filter(month == "Jan") %>% 
   mutate(year = year - 1,
          month = "next_jan")
 
 t_data <- bind_rows(temp_data, next_jan) %>% 
-  mutate(month = factor(month, levels = c("last_dec", month.abb, "next_jan")),
-         month_number = as.numeric(month) - 1,
-         this_year = year == max(year))
+  mutate(month = factor(month, levels = c(month.abb, "next_jan")),
+         month_number = as.numeric(month) - 1)
 
-annotation <- t_data %>% slice_max(year) %>% slice_max(month_number)
+circles <- tibble(
+  x = 12,
+  y = c(1.5, 2.0),
+  labels = c("1.5°C", "2.0°C")
+)
+months_labels <- tibble(
+  x = 1:12,
+  y = 2.5,
+  label = month.abb
+)
+annotation <- t_data %>%
+  slice_max(year) %>%
+  slice_max(month_number)
 
 # Visualisation
-temp_data %>% ggplot(aes(x = month_number, y = t_diff, color = year,
+t_data %>% ggplot(aes(x = month_number, y = t_diff, color = year,
                       group = year)) + 
+  geom_point(x=12,y=-1.5,color="black",size=113) +
+  geom_hline(yintercept = c(1.5, 2), color = "red") +
   geom_line() +
+  geom_label(data = circles,
+             aes(x = x, y = y, label = labels),
+             color = "red", fill = "black",
+             label.size = 0, inherit.aes = F) +
+  geom_text(data = months_labels, aes(x = x, y = y, label = label),
+            inherit.aes = F, color = "white",
+            angle = c(seq(330,0, length.out = 12))) +
+  geom_text(aes(x = 3, y = -1.5,
+                label = glue("{max(t_data$year)}",)),
+            size = 6, show.legend = F)+
+  geom_point(data = annotation, aes(x = month_number, y = t_diff),
+             size = 2.5) +
   scale_color_viridis_c("", breaks = seq(1880, 2020, 20),
-                        guide = guide_colorbar(frame.linewidth = 0.5,
-                                               frame.colour = "white")) +
+                        guide = "none") +
   scale_x_continuous(breaks = 1:12,
                      labels = month.abb) +
-  scale_y_continuous(breaks = seq(-0.8,1.4,0.2)) +
+  scale_y_continuous(breaks = seq(-2,2.4,0.2),
+                     limits = c(-2,2.5), expand = c(0,-0.5)) +
   coord_polar() +
-  labs(title = "Global temperature change since 1880 by month",
-       y = "Temperature change since pre-industrial time (°C)",
+  labs(title = glue("Global temperature change (1880 - {max(t_data$year)})"),
+       y = NULL,
        x = NULL) +
   theme(
-    panel.background = element_rect(fill = "black", colour = "white", size = 1),
+    panel.background = element_rect(fill = "gray24", colour = "gray24" ),
     panel.grid = element_blank(),
-    plot.background = element_rect(fill = "gray33"),
+    plot.background = element_rect(fill = "gray24", colour = "gray24"),
     plot.title = element_text(colour = "white", size = 14,
                               hjust = 0.5, face  = "bold"),
-    axis.title = element_text(colour = "white", size = 12),
-    axis.text = element_text(colour = "white", size = 11),
-    legend.background = element_rect(fill = NA),
-    legend.text = element_text(colour = "white"),
-    legend.key.height = unit(55, "pt"),
-    axis.ticks.length = unit(-5, "pt"),
-    axis.ticks = element_line(colour = "white")
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
   )
 
 # Save the figure
-ggsave("figures/temperature_spiral_plot.png", height = 4.5, width = 7, dpi = 400)
+ggsave("figures/temperature_spiral_plot.png", height = 4.5, width = 4.5, dpi = 400)
