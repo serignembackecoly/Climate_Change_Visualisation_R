@@ -1,3 +1,6 @@
+# This script is for plotting the evolution of temperature
+# anomalies from 1880 to 2023 with a smooth line
+
 # Libraries
 library(tidyverse)
 
