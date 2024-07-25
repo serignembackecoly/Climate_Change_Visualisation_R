@@ -15,12 +15,12 @@ temp_data <- raw_data %>%
   drop_na()
 
 # Some creationof data frame for plot purpose
-last_dec <- t_data %>% 
+last_dec <- temp_data %>% 
             filter(month == "Dec") %>% 
             mutate(year = year + 1,
                    month = "last_dec")
 
-next_jan <- t_data %>% 
+next_jan <- temp_data %>% 
   filter(month == "Jan") %>% 
   mutate(year = year - 1,
          month = "next_jan")
