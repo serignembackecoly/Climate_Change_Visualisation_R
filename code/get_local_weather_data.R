@@ -36,8 +36,7 @@ station_daily <- glue("https://www.ncei.noaa.gov/pub/data/ghcn/daily/by_station/
 local_weather <- read_csv(station_daily,
                           col_names = c("station", "date", "variable", "value", "a", "b", "c", "d")) %>%
   select(date, variable, value) %>%
-  pivot_wider(names_from = "variable", values_from="value",
-              values_fill = 0) %>%
+  pivot_wider(names_from = "variable", values_from="value") %>%
   select(date, TMAX, TMIN, PRCP) %>%
   mutate(date = ymd(date), TMAX = TMAX / 10, TMIN = TMIN / 10, PRCP = PRCP /10) %>% 
   rename_all(tolower)
