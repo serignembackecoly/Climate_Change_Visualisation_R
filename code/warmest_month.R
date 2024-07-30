@@ -62,7 +62,7 @@ p2 <- p1 +
             aes(x = 5.7, y = month_anom, label = glue("June {annotation$year}")),
             hjust = 1) 
 # Save the figure
-ggsave(p2, "figures/warmest_month_plot.png", height = 4, width = 6, dpi = 600)
+ggsave("figures/warmest_month_plot.png", plot = p2, height = 4, width = 6, dpi = 600)
 
 # Create the GIF
 p3 <- p1 +
