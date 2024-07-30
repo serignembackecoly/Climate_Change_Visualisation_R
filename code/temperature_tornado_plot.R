@@ -19,7 +19,14 @@ grid_labels <- tibble(
 
 year_labels <- tibble(
   x = -2,
-  y = c(seq(1880,2000, 20), 2010, 2024)
+  y = c(seq(1880,2000, 20), 2010, 2024),
+  label = c(seq(1880,2000, 20), 2010, paste0('2024','*'))
+)
+
+asterix <- tibble(
+  x = -5.2,
+  y = 1940,
+  label = "(*) 2024 based on Jan-Jun"
 )
 # Visualisation
 t_data %>%
@@ -35,8 +42,12 @@ t_data %>%
   geom_segment(linewidth = 1.1, lineend = "round") +
   geom_shadowtext(data = year_labels,
             aes(x = x, y = y,
-                label = y), inherit.aes = F,
+                label = label), inherit.aes = F,
             color = "cyan") +
+  geom_shadowtext(data = asterix,
+                  aes(x = x,y = y,label =label),
+                  inherit.aes = F,color = "cyan",
+                  angle = 90, size = 2) +
   geom_label(data = grid_labels,
              aes(x = x, y = y, label = label), 
              inherit.aes = F, color = "gold",
