@@ -70,5 +70,5 @@ p3 <- p1 +
              label.size = 0, fontface = "bold") +
   transition_manual(year, cumulative = T)
 
-animate(p3, width = 6 , height = 4, units = "pt", res = 300)
+animate(p3, width = 6 , height = 4, units = "in", res = 300)
 anim_save("figures/animation_warmest_month.gif")
